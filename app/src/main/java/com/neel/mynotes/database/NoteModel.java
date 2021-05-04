@@ -1,6 +1,6 @@
 package com.neel.mynotes.database;
 
-class NoteModel {
+public class NoteModel {
     private long id;
     private String title;
     private String content;

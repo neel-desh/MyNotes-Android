@@ -62,8 +62,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return;
 
         db.execSQL("DROP TABLE IF EXISTS "+NOTE_TABLE);
-        onCreate(db);
-
         db.execSQL("DROP TABLE IF EXISTS "+USER_TABLE);
         onCreate(db);
     }
@@ -142,33 +140,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_USERNAME, user.getName());
         values.put(COLUMN_EMAIL, user.getEmail());
         values.put(COLUMN_PASSWORD, user.getPassword());
-        // Inserting Row
         db.insert(USER_TABLE, null, values);
         db.close();
     }
 
     public List<UserModel> getAllUser() {
-        // array of columns to fetch
         String[] columns = {
                 COLUMN_ID,
                 COLUMN_EMAIL,
                 COLUMN_USERNAME,
                 COLUMN_PASSWORD
         };
-        // sorting orders
         String sortOrder =
                 COLUMN_USERNAME + " ASC";
         List<UserModel> userList = new ArrayList<UserModel>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(USER_TABLE, //Table to query
-                columns,    //columns to return
-                null,        //columns for the WHERE clause
-                null,        //The values for the WHERE clause
-                null,       //group the rows
-                null,       //filter by row groups
-                sortOrder); //The sort order
-        // Traversing through all rows and adding to list
+        Cursor cursor = db.query(USER_TABLE,
+                columns,
+                null,
+                null,
+                null,
+                null,
+                sortOrder);
+
         if (cursor.moveToFirst()) {
             do {
                 UserModel user = new UserModel();
@@ -182,47 +177,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         db.close();
-        // return user list
+
         return userList;
     }
-    /**
-     * This method to update user record
-     *
-     * @param user
-     */
+
     public void updateUser(UserModel user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_USERNAME, user.getName());
         values.put(COLUMN_EMAIL, user.getEmail());
         values.put(COLUMN_PASSWORD, user.getPassword());
-        // updating row
+
         db.update(USER_TABLE, values, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(user.getId())});
         db.close();
     }
-    /**
-     * This method is to delete user record
-     *
-     * @param user
-     */
+
     public void deleteUser(UserModel user) {
         SQLiteDatabase db = this.getWritableDatabase();
-        // delete user record by id
+
         db.delete(USER_TABLE, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(user.getId())});
         db.close();
     }
 
     public boolean checkUser(String email) {
-        // array of columns to fetch
+
         String[] columns = {
                 COLUMN_ID
         };
         SQLiteDatabase db = this.getReadableDatabase();
-        // selection criteria
+
         String selection = COLUMN_EMAIL + " = ?";
-        // selection argument
+
         String[] selectionArgs = {email};
 
 
